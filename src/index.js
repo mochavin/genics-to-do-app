@@ -101,10 +101,10 @@ function addItemToDOM(text, completed) {
 
   var item = document.createElement('li');
   item.innerText = text;
-  item.classList.add("w-full", "flex", "justify-between", "px-4", "py-4", "border-b-8", "border-purple-200", "hover:bg-purple-300", "rounded-md", "transition", "duration-150");
-
+  item.classList.add("bg-purple-100", "font-[450]",  "w-full", "flex", "justify-between", "px-4", "py-4", "border-b-8", "border-purple-200", "hover:bg-purple-300", "rounded-md", "transition", "duration-150");
+  if(completed) item.classList.add("line-through");
   var buttons = document.createElement('div');
-  buttons.classList.add('buttons');
+  // buttons.classList.add('buttons');
   buttons.classList.add("flex", "text-purple-600")
 
   var remove = document.createElement('button');
