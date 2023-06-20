@@ -1,8 +1,12 @@
 var todoInput = document.getElementById('item');
 var addButton = document.getElementById('add');
 var todoList = document.getElementById('todo');
+var completedList = document.getElementById('completed');
 
 var todos = [];
+var completed = [];
+
+renderTodoList();
 
 addButton.addEventListener('click', function () {
   var todoText = todoInput.value;
@@ -37,24 +41,32 @@ function removeTodoFromList(index) {
   renderTodoList();
 }
 
+function removeUndoFromList(index) {
+  completed.splice(index, 1);
+  renderTodoList();
+}
+
 // Fungsi untuk menandai to-do sebagai selesai atau belum selesai
 function toggleTodoCompletion(index) {
-  todos[index].completed = !todos[index].completed;
-  if (todos[index].completed) {
-    todos.push(todos[index]);
-    todos.splice(index, 1);
-  }else{
-    let temp = todos[index];
-    todos.splice(index, 1);
-    todos.unshift(temp);
-    
-  }
+  completed.push(todos[index]);
+  todos.splice(index, 1);
+  renderTodoList();
+}
+
+function unTodo(index) {
+  todos.unshift(completed[index]);
+  completed.splice(index, 1);
   renderTodoList();
 }
 
 // Fungsi untuk menghasilkan tampilan daftar to-do
 function renderTodoList() {
   todoList.innerHTML = '';
+
+  if (todos.length === 0) {
+    todoList.innerHTML =
+      '<p class="text-center text-sm text-purple-500 font-[500] mb-3">Nganggur ya?</p>';
+  }
 
   todos.forEach(function (todoItem, index) {
     var todoItemElement = document.createElement('li');
@@ -92,7 +104,7 @@ function renderTodoList() {
       'rounded-md',
       'hover:bg-purple-600',
       'transition',
-      'duration-150'
+      'duration-150',
     );
 
     var todoText = document.createElement('div');
@@ -124,5 +136,77 @@ function renderTodoList() {
     todoItemElement.appendChild(buttons);
 
     todoList.appendChild(todoItemElement);
+  });
+
+  completedList.innerHTML = '';
+
+  if(completed.length === 0) {
+    completedList.innerHTML = '<p class="text-center text-sm text-purple-500 font-[500] mb-3">Belum ada yang selesai nih</p>';
+  }
+
+  completed.forEach((todoItem, index) => {
+    var todoItemElement = document.createElement('li');
+    todoItemElement.classList.add(
+      'bg-purple-100',
+      'font-[450]',
+      'w-full',
+      'flex',
+      'justify-between',
+      'px-4',
+      'py-4',
+      'border-b-8',
+      'border-purple-200',
+      'hover:bg-purple-300',
+      'rounded-md',
+      'transition',
+      'duration-250',
+      'hover:p-6'
+    );
+    var buttons = document.createElement('div');
+    buttons.classList.add('flex', 'space-x-4');
+
+    var todoCompleteButton = document.createElement('button');
+    todoCompleteButton.textContent = 'Complete';
+    todoCompleteButton.addEventListener('click', function () {
+      unTodo(index);
+    });
+
+    todoCompleteButton.classList.add(
+      'bg-purple-500',
+      'text-white',
+      'px-4',
+      'py-2',
+      'rounded-md',
+      'hover:bg-purple-600',
+      'transition',
+      'duration-150'
+    );
+
+    var todoText = document.createElement('div');
+    todoText.textContent = todoItem.text;
+    todoText.classList.add('font-[450]', 'text-lg');
+
+    var todoRemoveButton = document.createElement('button');
+    todoRemoveButton.textContent = 'Remove';
+    todoRemoveButton.addEventListener('click', function () {
+      removeUndoFromList(index);
+    });
+    todoRemoveButton.classList.add(
+      'bg-purple-500',
+      'text-white',
+      'px-4',
+      'py-2',
+      'rounded-md',
+      'hover:bg-purple-600',
+      'transition',
+      'duration-150'
+    );
+
+    buttons.appendChild(todoCompleteButton);
+    buttons.appendChild(todoRemoveButton);
+    todoItemElement.appendChild(todoText);
+    todoItemElement.appendChild(buttons);
+
+    completedList.appendChild(todoItemElement);
   });
 }
