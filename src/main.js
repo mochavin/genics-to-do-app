@@ -3,8 +3,10 @@ var addButton = document.getElementById('add');
 var todoList = document.getElementById('todo');
 var completedList = document.getElementById('completed');
 
-var todos = [];
-var completed = [];
+var todos = (localStorage.getItem('listTodos')? localStorage.getItem('listTodos').split(','): []);
+var completed = (localStorage.getItem('listCompleted')? localStorage.getItem('listCompleted').split(','): []);
+localStorage.clear('ltodos');
+localStorage.clear('lcompleted');
 
 renderTodoList();
 
@@ -27,11 +29,7 @@ todoInput.addEventListener('keydown', function (e) {
 
 // Fungsi untuk menambahkan to-do ke daftar
 function addTodoToList(todoText) {
-  var todoItem = {
-    text: todoText,
-    completed: false,
-  };
-  todos.unshift(todoItem);
+  todos.unshift(todoText);
   renderTodoList();
 }
 
@@ -61,11 +59,13 @@ function unTodo(index) {
 
 // Fungsi untuk menghasilkan tampilan daftar to-do
 function renderTodoList() {
+  localStorage.setItem('listTodos', todos);
+  localStorage.setItem('listCompleted', completed);
   todoList.innerHTML = '';
 
   if (todos.length === 0) {
     todoList.innerHTML =
-      '<p class="text-center text-sm text-purple-500 font-[500] mb-3">Nganggur ya?</p>';
+      '<p class="text-center text-sm text-purple-500 font-[500] mb-3">Nothing to do!</p>';
   }
 
   todos.forEach(function (todoItem, index) {
@@ -76,22 +76,21 @@ function renderTodoList() {
       'w-full',
       'flex',
       'justify-between',
-      'px-4',
-      'py-4',
-      'border-b-8',
+      'pl-4',
+      'border-b-4',
       'border-purple-200',
       'hover:bg-purple-300',
       'rounded-md',
       'transition',
       'duration-250',
-      'hover:p-6'
+      'hover:py-1',
     );
 
     var buttons = document.createElement('div');
-    buttons.classList.add('flex', 'space-x-4');
+    buttons.classList.add('flex', 'space-x-4', 'scale-75');
 
     var todoCompleteButton = document.createElement('button');
-    todoCompleteButton.textContent = 'Complete';
+    todoCompleteButton.textContent = 'Done';
     todoCompleteButton.addEventListener('click', function () {
       toggleTodoCompletion(index);
     });
@@ -104,15 +103,12 @@ function renderTodoList() {
       'rounded-md',
       'hover:bg-purple-600',
       'transition',
-      'duration-150',
+      'duration-150'
     );
 
     var todoText = document.createElement('div');
-    todoText.textContent = todoItem.text;
-    if (todoItem.completed) {
-      todoText.style.textDecoration = 'line-through';
-    }
-    todoText.classList.add('font-[450]', 'text-lg');
+    todoText.textContent = todoItem;
+    todoText.classList.add('font-[450]', 'py-1');
 
     var todoRemoveButton = document.createElement('button');
     todoRemoveButton.textContent = 'Remove';
@@ -140,8 +136,9 @@ function renderTodoList() {
 
   completedList.innerHTML = '';
 
-  if(completed.length === 0) {
-    completedList.innerHTML = '<p class="text-center text-sm text-purple-500 font-[500] mb-3">Belum ada yang selesai nih</p>';
+  if (completed.length === 0) {
+    completedList.innerHTML =
+      '<p class="text-center text-sm text-purple-500 font-[500] mb-3">Nothing completed</p>';
   }
 
   completed.forEach((todoItem, index) => {
@@ -152,21 +149,20 @@ function renderTodoList() {
       'w-full',
       'flex',
       'justify-between',
-      'px-4',
-      'py-4',
-      'border-b-8',
+      'pl-4',
+      'border-b-4',
       'border-purple-200',
       'hover:bg-purple-300',
       'rounded-md',
       'transition',
       'duration-250',
-      'hover:p-6'
+      'hover:py-1' 
     );
     var buttons = document.createElement('div');
-    buttons.classList.add('flex', 'space-x-4');
+    buttons.classList.add('flex', 'space-x-4' ,'scale-75');
 
     var todoCompleteButton = document.createElement('button');
-    todoCompleteButton.textContent = 'Complete';
+    todoCompleteButton.textContent = 'Undone';
     todoCompleteButton.addEventListener('click', function () {
       unTodo(index);
     });
@@ -183,8 +179,8 @@ function renderTodoList() {
     );
 
     var todoText = document.createElement('div');
-    todoText.textContent = todoItem.text;
-    todoText.classList.add('font-[450]', 'text-lg');
+    todoText.textContent = todoItem;
+    todoText.classList.add('font-[450]', 'py-1');
 
     var todoRemoveButton = document.createElement('button');
     todoRemoveButton.textContent = 'Remove';
